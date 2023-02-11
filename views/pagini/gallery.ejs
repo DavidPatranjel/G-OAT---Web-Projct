@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>G-OAT - Gallery</title>
+        <meta charset="utf-8">
+        <meta name = "keywords" content = "oatmeal, porridge, oat, breakfast, food, vegan, dairy-free, sugar-free, health, healthy food">
+        <link href="/Resurse/css/galerie-animata.css" rel="stylesheet" type="text/css"/>
+        <link href="/Resurse/css/counter_galerie.css" rel="stylesheet" type="text/css" />
+        <meta title = "G-OAT - Gallery">
+        <%- include ("../fragmente/head.ejs") %>
+    </head>
+    <body>
+        <%- include ("../fragmente/header.ejs") %>
+        <main>
+            <div id = "galerie_statica">
+                <%
+                for(let imag of locals.imagini){ 
+                    d = new Date(); 
+                    %>
+                        <figure>
+                            <picture>
+                                <source srcset="<%- imag.mic%>" media="(max-width:960px)"/>
+                                <source srcset="<%- imag.mediu%>" media="(max-width:1525px)"/>
+                                <img src="<%- imag.mare %>" title = "<%-imag.titlu +" "+ imag.credits%>" alt = "<%-imag.titlu%>">
+                            </picture>
+                            <figcaption><%- imag.descriere %></figcaption>
+                        </figure>
+                
+                <% } %>
+            </div>
+            <section id="sectiune-galerie-animata">
+                <div id="galerie-animata" class="galerie-a">
+                    <% 
+                    i = 0;
+                    for (let imag of locals.imagini){  
+                        if(i == locals.nrimag){
+                            break;
+                        }%>
+                        <figure>
+                            <picture>
+                                <!-- il ia pe primul care se potriveste cu query-ul din media-->
+                                <source srcset="/<%-imag.mic%>" media="(max-width:700px)"/>
+                                <img src="/<%-imag.mare%>" alt="text"/>
+                            </picture>
+                            <figcaption><%-imag.descriere%></figcaption>
+                        </figure>
+                        <% i = i + 1; %>
+                    <% } %>
+                </div>
+            </section>
+        </main>
+        <%- include ("../fragmente/footer.ejs") %>
+    </body>
+</html>

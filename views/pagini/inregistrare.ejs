@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html  lang="ro">
+    <head>
+        <meta name="description" content="G-OAT - Sign-up">
+        <meta name="keywords" content="oatmeal, oat, G-OAT, sign-up, user">
+        <title>G-OAT - Sign-up </title>
+        <%- include("../fragmente/head") %>     
+        <script type="text/javascript" src=/Resurse/js/inregistrare.js></script>
+    </head>
+    <body>
+    <%- include("../fragmente/header") %>
+
+    <main>
+    <div class="afisaj">
+        <h1>Sign-up</h1>
+            <% if(!locals.raspuns) { %>
+			    <%-include("../fragmente/formular", {action: "/inreg"}) %>
+            <% } %>
+	<% if(locals.raspuns) { %>
+	    <%- locals.raspuns+"<br/>"%>
+	<% } %>
+	<% if(locals.err) { %>
+	    <%- locals.err %>
+	<% } %>
+    </div>
+</main>
+
+<footer>
+    <%- include("../fragmente/footer") %>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html  lang="en">
+    <head>
+        <meta name="description" content="G-OAT Product - The best way to start your day!">
+        <meta name="keywords" content="G-OAT, oatmeal, oat, product, sweets, drinks, baby goats, healthy">
+        <link rel="stylesheet" href="/Resurse/css/produse.css" type="text/css" />
+        <title>G-OAT - Products</title>
+        <%- include("../fragmente/head") %>     
+        <script type="text/javascript" src=/Resurse/js/produse.js></script>
+    </head>
+    <body>
+    <%- include("../fragmente/header") %>
+
+    <main>
+        <h2>G-OAT PRODUCTS</h2>
+        <details><summary>Filter Products</abr></summary>
+            <br>
+            <label> Product name: <input type="text" id="inp-nume"></label>
+            <!--<label> Maxim calorii: <input type="number" id="inp-calorii" value="10000"></label>-->
+            <div> Calories:<!-- trebuie sa aiba acelasi name ca sa formeze un grup -->
+                <ul>
+                    <li><label>Low calories (under 350)
+                        <input id="i_rad1"  name="gr_rad" value="0:350" type="radio"/>
+                    </label></li>
+                    <li><label>Medium calories (under 700)
+                        <input id="i_rad2"  name="gr_rad" value="350:750" type="radio"/>
+                    </label></li>
+                    <li><label>High calories (above 700)
+                        <input id="i_rad3" name="gr_rad" value="700:1000000000" type="radio"/>
+                    </label></li>
+                    <li><label>All products
+                        <input id="i_rad4" checked name="gr_rad" value="toate" type="radio"/>
+                    </label></li>
+                <ul>
+            </div>
+            <% 
+                let ingred = [];
+                for( let prod of locals.produse){
+                    for(let ingr of prod.ingrediente){
+                        if(!ingred.includes(ingr) && !ingr.includes("milk")){
+                            ingred.push(ingr);                            
+                        }
+                    }
+                }
+            %>
+            <label>Minimum price: <input type="range" id="inp-pretmin" value="0" min="0"  max="300"> <span id="infoRangeMin">(0)</span></label>
+            <label>Maximum price: <input type="range" id="inp-pretmax" value="300" min="20"  max="300"> <span id="infoRangeMax">(300)</span></label><br>
+            <label>Product category:
+                <select id="inp-categorie">
+                    <option id="sel-toate" selected value="toate">all</option>
+                    <% for (let opt of locals.optiuni) { %>
+                        <option value="<%- opt.unnest %>"><%- opt.unnest %> </option>
+                    <% } %>
+                </select>
+            </label><br>
+            
+            <label>Ingredients:
+                <input list="inp" id="inp-ingredient">
+                <datalist id="inp">
+                    <% for(let ing of ingred){ %>
+                        <option value="<%-ing%>"><%-ing%></option>
+                    <%} %>
+                </datalist>
+            </label>
+            <br>
+            <label>Milk type:<br>
+                <select id="inp-milk" multiple>
+                    <% for (let opt of locals.milk_type) { %>
+                        <option value="<%- opt.unnest %>"><%- opt.unnest %> </option>
+                    <% } %>
+                </select>
+            </label>
+            <br>
+            <label>Sugar-free:<input type="checkbox" id ="inp-sugar"> </label><br>
+            <p>Product despription: <br><textarea id="inp-textarea" rows="4" cols="50"></textarea></p>
+            <button id="filtrare">Filter</button> <button id="resetare">Reset</button><br><br/>
+        </details>
+        <details>
+            <summary>Sort Products</summary>
+            <button id="sortCrescNume">Sort ascending on price and name</button>
+            <button id="sortDescrescNume">Sort descending on price and name</button>
+        </details>
+        
+        <p><button id="p-suma">Sum of all products.</button></p>
+        <section id="produse">
+            
+            <div class="grid-produse">
+                <% for( let prod of locals.produse) { %>
+                    <article class="produs" >
+                        <h3 class="nume"><a href="/produs/<%-prod.id %>" ><span class="val-nume"><%- prod.nume%></span></a></h3>
+                        <p class="categorie">Category: <span class="val-categorie"><%- prod.categorie%></span></p>
+                        <p class="descriere"><span class="val-descriere"><%- prod.descriere%></span></p>
+                        <div class="info-prod">
+                            <p class="pret">Price: </p><p><span class="val-pret"><%- prod.pret%></span></p>
+                            <p class="calorii">Calroies: </p><p><span class="val-calorii"><%- prod.calorii%></span></p>
+                            <p class="sugar">Added sugar: </p><p><span class="val-sugar"><%- prod.added_sugar%></span></p>
+                            <p class="milk">Milk: </p><p><span class="val-milk"><%- prod.tip_produs%></span></p>
+                            <p class="ingredients">Ingredients: </p><p id = "de_ascuns"><span class="val-ingredients"><%- prod.ingrediente%></span></p>
+                            <p class="date">Added date: </p><p><span class="val-date"><time datetime="15/September/2018 (Saturday)">
+                                <% 
+                                    let data = prod.data_adaugare;
+
+                                    const day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+                                    let zisapt = day[data.getDay()];
+
+                                    const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+                                    let luna = month[data.getMonth()];
+                                    let ziluna = data.getDate();
+                                    let an = data.getFullYear();
+                                %> 
+                                <%-ziluna+"/"+luna+"/"+an+" ("+zisapt+")"%>
+                            </time></span></p>
+                        </div>
+                        <figure>
+                            <a href="/produs/<%-prod.id %>" ><img src="/resurse/img/produse/<%- prod.imagine %>" style="width:40%;height:50%;" alt="[imagine <%- prod.nume %>]" /></a>
+                        </figure>
+                        <label class="selecteaza-cos">
+                            Select:<br/>
+                            <input type="checkbox" class="select-cos" value="<%-prod.id %>" autocomplete="off">
+                        </label>
+                    </article>
+                <% }%>
+            </div>
+        </section>
+    </main>
+
+    <%- include("../fragmente/footer") %>
+    </body>
+</html>

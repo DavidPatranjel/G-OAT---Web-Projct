@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang = "en">
+	<head>
+		<meta charset="utf-8"/>
+		<title>G-OAT - Invoice</title>
+		<style>
+			body{
+				counter-reset: cnt;
+			}
+			#tabl{
+				border-collapse:collapse;
+			}
+			tr{
+				counter-increment: cnt;
+			}
+			#tabl td, #tabl th{
+				border:1px solid black;
+			}
+
+			p{color:red};
+			#tabl::after{
+				content:"Numar produse" counter(cnt);
+				display: block;
+			}
+		</style>
+		<link rel="stylesheet" href="<%- locals.protocol%><%- locals.domeniu %>/Resurse/css/factura.css" type="text/css">
+	</head>
+	<body>
+		<h1>G-OAT Invoice</h1>
+		<p>Hello <%-locals.utilizator.nume %> <%-locals.utilizator.prenume %>, Here are all the products you ordered.</p> 
+		<table id="tabl">
+			<thead>
+				<tr>
+					<th>Nr. crt.</th>
+					<th>Product</th>
+					<th>Price</th>
+					<th>QR</th>
+					<th>Calroies</th>
+				</tr>
+			</thead>
+			
+			<tbody>
+                <% 
+				var i = 0;
+				var suma=0;
+				for (let prod of locals.produse) {
+					suma+=parseFloat(prod.pret);
+					i = i + 1;
+					 %>
+                    <tr>
+						<td><%- i %></td>
+                        <td><%-  prod.nume %></td>
+                        <td><%-  prod.pret %></td>
+                        <td><img src="<%- locals.protocol%><%- locals.domeniu %>/Resurse/img/qrcode/<%- prod.id %>.png"></td>
+						<td><%- prod.gramaj %></td>
+                    </tr>
+                <% } %>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="5">Total: <%- suma %></td>
+				</tr>
+			</tfoot>
+		</table>
+	</body>
+</html>

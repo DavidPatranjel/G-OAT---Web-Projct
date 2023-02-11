@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html  lang="en">
+    <head>
+        <meta name="keywords" content="error404, G-OAT, ovaz">
+        <title>G-OAT - Error404</title>
+        <%- include("../fragmente/head.ejs");  %> 
+    </head>
+    <body>
+        <%- include("../fragmente/header.ejs");  %> 
+
+        <main>
+            <figure class="eroare">
+                <picture>
+                    <source srcset="Resurse/img/404.jpg" width="300px" height="200px" media="(max-width:960px)"/>
+                    <source srcset="Resurse/img/404.jpg" width="400px" height="300px" media="(max-width:1100px)"/>
+                    <source srcset="Resurse/img/404.jpg" width="500px" height="340px" media="(max-width:1300px)"/>
+                    <img src="Resurse/img/404.jpg" width="600px" height="400px" alt="Error404"/>
+                </picture>
+            </figure>
+        </main>
+        
+        <%- include("../fragmente/footer.ejs");  %> 
+    </body>
+</html>

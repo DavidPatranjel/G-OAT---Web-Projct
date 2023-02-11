@@ -1,0 +1,115 @@
+<header id="top">
+    <p><i id = "btn_tema" onclick="schimbareButon(this)" class="fa-solid fa-sun fa-xl"></i></p>
+    <script>
+        var tema = localStorage.getItem("tema");
+        console.log(tema);
+        if(tema){
+            if(tema == "dark"){
+                document.documentElement.classList.add("dark");
+                if(!document.getElementById("btn_tema").classList.contains("fa-moon")){
+                    document.getElementById("btn_tema").classList.add("fa-moon");
+                    document.getElementById("btn_tema").classList.remove("fa-sun");
+                    document.getElementById("btn_tema").classList.remove("fa-ghost");
+                }
+            }else{
+                document.documentElement.classList.remove("dark");
+                document.documentElement.classList.add("halloween");
+                if(!document.getElementById("btn_tema").classList.contains("fa-ghost")){
+                    document.getElementById("btn_tema").classList.add("fa-ghost");
+                    document.getElementById("btn_tema").classList.remove("fa-sun");
+                    document.getElementById("btn_tema").classList.remove("fa-moon");
+                }
+            }
+        }
+        else{
+            document.documentElement.classList.remove("halloween");
+            if(!document.getElementById("btn_tema").classList.contains("fa-sun")){
+                document.getElementById("btn_tema").classList.add("fa-sun");
+                document.getElementById("btn_tema").classList.remove("fa-moon");
+                document.getElementById("btn_tema").classList.remove("fa-ghost");
+            }
+        }
+    </script>
+    <% if(locals.utilizator){ %>
+        <%if(locals.utilizator.poza_utilizator){ %>
+            <div id = "utilizator_profil">
+                <div id = "scris">
+                    <%- locals.utilizator.username%>
+                </div>
+                <div id = "poza_profil">
+                        <picture>
+                            <source srcset="poze_uploadate/<%- locals.utilizator.username%>/<%-locals.utilizator.poza_utilizator%>" width="38px" height="38px" media="(max-width:800px)"/>
+                            <img src="poze_uploadate/<%- locals.utilizator.username%>/<%-locals.utilizator.poza_utilizator%>" width = 45px height= 45px>
+                        </picture>
+                </div>
+            </div>
+        <% } else{%>
+            <div id = "utilizator_profil_nopic">
+                <div id = "scris">
+                    <%- locals.utilizator.username%>
+                </div>
+            </div>
+        <% } %>
+    <% } %>
+    <h1>G-OAT</h1>
+</header>
+<nav>
+    <label id="hamburger" for="ch-menu">
+        <img src="/Resurse/img/Hamburger.png" width = 50px height= 50px alt="menu">
+    </label>
+    <input id="ch-menu" type="checkbox">
+    <ul class="menu">
+        <li><a href = "/index"><i class="fa-solid fa-house"></i><p id = "main_page"> Main page</p></a></li>
+        <li><div>Home</div>
+            <ul class="submenu">
+                <li><a href="/index#top">Welcome</a></li>
+                <li><a href="/index#products">Products</a></li>
+                <li><a href="/index#orar">Delivery</a></li>
+                <li><a href="/index#faq">FAQ</a></li>
+                <li><a href="/index#calendar">Calendar</a></li>
+            </ul>
+        </li>
+        <li><div>Shop</div>
+            <ul class="submenu">
+                <li><a href="/produse">All</a></li>
+                <% for(let cat of locals.categorii){ 
+                    if(cat.unnest != "sweets"){%>
+                        <li><a href="/produse?tip=<%- cat.unnest %>"><%- cat.unnest %></a></li>
+                <%  }} %>
+                <li><a href="/info-clienti">Custom</a></li>
+            </ul>
+        </li>
+        <li><div>Blog</div>
+            <ul class="submenu">                        
+                <li><a href="/gallery">Gallery</a></li>
+                <li><a href="/gallery#sectiune-galerie-animata">Specials</a></li>
+                <li><a href="/recipes">Recipes</a></li>
+            </ul>
+        </li>
+        <li><a href="/despre">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><div>Account</div>
+            <ul class="submenu">    
+                <% if(!locals.utilizator) { %>
+                    <li><a href="/inregistrare">Sign up</a></li> 
+                    <li><a href="/login">Log in</a></li>     
+                <% }else{%>
+                    <li><a href="/chat">Chat</a></li>    
+                <% }%>
+                <li><a href="/cos-virtual">My basket</a></li>
+            </ul>
+        </li>
+        <% if(locals.utilizator && locals.utilizator.rol == "admin") { %>
+            <li><a href = "/useri">Users</a></li> 
+        <% } %>
+        <% if(locals.utilizator) { %>
+            <li><div><%- locals.utilizator.username %></div>
+                <ul class="submenu">
+                    <li><a href = "/profil">Profile</a></li>
+                    <li><a href = "/logout">Logout</a></li>
+                    <li><a href = "/sterge">Delete</a></li>
+                </ul>
+            </li>
+        <% } %>
+    </ul>
+</nav>

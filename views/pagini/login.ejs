@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html  lang="ro">
+    <head>
+        <meta name="description" content="G-OAT - Log in">
+        <meta name="keywords" content="oatmeal, oat, G-OAT, log-in, user">
+        <title>G-OAT - Sign-up </title>
+        <%- include("../fragmente/head") %>     
+    </head>
+    <body>
+    <%- include("../fragmente/header") %>
+
+    <main>
+    <div class="afisaj">
+        <h1>Log in to your account</h1>
+        <form id="form_inreg"  method="post" class="date"  action="/login"  enctype="multipart/form-data">
+            <% if(!locals.utilizator) {%>
+            <p>
+                <label>
+                    Username: <input type="text" name="username" id="inp-username" value="prof<%= Math.floor(Math.random()*100000) %>" required pattern="[A-Za-z0-9]+">
+                </label>
+            </p>
+            <p>
+                <label>
+                    Parola: <input id="parl" type="password" required  name="parola" value="">
+                </label>
+            </p>
+            <p>
+                <input type = "submit" value="Log in">
+            </p>
+            <% } %>
+        </form>
+        <%- locals.mesajLogin %>
+    </div>
+</main>
+
+<footer>
+    <%- include("../fragmente/footer") %>
+</footer>
+
+</body>
+</html>

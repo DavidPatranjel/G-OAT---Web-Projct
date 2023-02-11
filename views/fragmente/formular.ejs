@@ -1,0 +1,51 @@
+<form id="form_inreg"  method="post" class="date"  action="<%= locals.action %>"  enctype="multipart/form-data">
+    <p>
+        <label>
+            Username: <input type="text" name="username" id="inp-username" value="user<%= Math.floor(Math.random()*1000) %>" required pattern="[A-Za-z0-9]+">
+        </label>
+    </p>
+    <p>
+        <label>
+            Last name: <input type="text" name="nume" id="inp-nume" pattern="[A-Za-z]+">
+        </label>
+    </p>
+    <p>
+        <label>
+            First name: <input type="text" name="prenume" id="inp-prenume" pattern="[A-Za-z]+">
+        </label>
+    </p>
+    <p>
+        <label>
+            Password: <input id="parl" type="password" required  name="parola" value="">
+        </label>
+    </p>
+    <p id="p-reintrod">
+        <label >
+            Confirm password: <input id="rparl" required type="password" name="rparola" value="">
+        </label>
+    </p>
+    <p>
+        <label>
+            Email: <input type="text" name="email" id="inp-email" required size="50">
+        </label>
+    </p>
+    <p>
+        <label>
+            Phone number: <input type="text" name="telefon" id="inp-telefon" required size="15" pattern="\+?0\d{9}">
+        </label>
+    </p>
+    <p>
+        <label>
+            Text chat colour: <select name="culoare_chat" id="sel-culoare"><option value="black" selected>black</option><option value="red">red</option><option value="green">green</option><option value="blue">blue</option></select>
+        </label>
+    </p>
+    <p>
+        <label>
+            Profile picture: <input type="file" name="poza">
+        </label>			
+    </p>
+    <p>		
+        <input type="submit" value="Sign-up">
+        <input type="reset" value="Reset">
+    </p>
+</form>

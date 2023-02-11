@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="/Resurse/css/video.css" rel="stylesheet" type="text/css"/>
+        <link href="/Resurse/css/orar.css" rel="stylesheet" type="text/css" />
+        <link href="/Resurse/css/calendar.css" rel="stylesheet" type="text/css" />
+
+        <title>G-OAT</title>
+        <meta charset="utf-8">
+        <meta name = "keywords" content = "oatmeal, porridge, oat, breakfast, food, vegan, dairy-free, sugar-free, health, healthy food">        
+        <%- include ("../fragmente/head.ejs") %>
+    </head>
+    <body>
+        <%- include ("../fragmente/header.ejs") %>
+        <p id="watermark"></p>
+        <main>
+            <div id="grid-pagina">
+                <section id="zona1">
+                    <section id="despre">
+                        <h2>Oatmeal bowls</h2>
+                        <blockquote class = "citat"><q>A good breakfast is the start of a great day</q></blockquote>
+                        <article>G-OAT is a revolutionary eatery specializing in <b>oatmeal bowls</b>, <b>smoothies</b>, sweets and more. We provide a <b>healthy</b>, <b>delicious</b>, <b>high-quality</b> 
+                            and fast meal option while striving to be conscientious of our local community and minimize our earthly impact. When you choose to serve a breakfast made by G-OAT you will leave feeling ready 
+                            to attack your day with a balanced mind-set.  And you will be at ease, knowing that your decision was not only a personally healthful one, but one that cast a vote for a better world at large.  
+                            And as a bonus, it will have been a whole heap of fun to eat.</article>
+                    </section>
+                    <div class = "photos_oat">
+                        <figure class = "oat">
+                            <picture>
+                                <source srcset="Resurse/img/oat1.jpg" width="150px" height="100px" media="(max-width:960px)"/>
+                                <source srcset="Resurse/img/oat1.jpg" width="200px" height="150px" media="(max-width:1100px)"/>
+                                <source srcset="Resurse/img/oat1.jpg" width="250px" height="170px" media="(max-width:1300px)"/>
+                                <img src="Resurse/img/oat1.jpg" width="300px" height="200px" alt="text"/>
+                            </picture>
+                            <figcaption>Oatmeal makes for a<br><b>better life</b></figcaption>
+                        </figure>
+
+                        <figure class = "oat">
+                            <picture>
+                                <source srcset="Resurse/img/oat2.jpg" width="150px" height="100px" media="(max-width:960px)"/>
+                                <source srcset="Resurse/img/oat2.jpg" width="200px" height="150px" media="(max-width:1100px)"/>
+                                <source srcset="Resurse/img/oat2.jpg" width="250px" height="170px" media="(max-width:1300px)"/>
+                                <img src="Resurse/img/oat2.jpg" width="300px" height="200px" alt="text"/>
+                            </picture>
+                            <figcaption>Oatmeal makes for a<br><b>healthier life</b></figcaption>
+                        </figure>
+                        
+                        <figure class = "oat">
+                            <picture>
+                                <source srcset="Resurse/img/oat3.jpg" width="150px" height="100px" media="(max-width:960px)"/>
+                                <source srcset="Resurse/img/oat3.jpg" width="200px" height="150px" media="(max-width:1100px)"/>
+                                <source srcset="Resurse/img/oat3.jpg" width="250px" height="170px" media="(max-width:1300px)"/>
+                                <img src="Resurse/img/oat3.jpg" width="300px" height="200px" alt="text"/>
+                            </picture>
+                            <figcaption>Oatmeal makes for a<br><b>sweeter life</b></figcaption>
+                        </figure>
+                    </div>
+                    <section id="traits">
+                        <h2>G-OAT products follow three simple rules</h2>
+                        <h3>ORGANIC</h3>
+                        <p>Our food is mostly organic.  What’s not is at least thoughtfully sourced, often from a small farm or producer that is simply not certified.</p>
+                        <h3>NUTRITIOUS</h3>
+                        <p>Everything we serve we believe to be good for you.  It’s all about eating real food.  We boast zero unpronounceable ingredients (as soon as you learn to say “Acai” that is), and dish out truckloads of fruits, veggies, nuts, seeds, and grains.</p>
+                        <h3>ENVIRONMENTALLY FRIENDLY</h3>
+                        <p>In everything we do, we aim to minimize our earthly impact.  The integrity of our plant-based menu has a particularly small footprint, and we strive to minimize our operation’s impact in myriad other ways as well.</p>
+                    </section>
+                </section>
+    
+                <section id = "zona8">
+                    <section id="faq">
+                        <details>
+                            <summary><abr title="Frequently Asked Questions">FAQ:</abr></summary>
+                            <ol>
+                                <li>How long does the delivery take?<br>The delivery takes between 1 and 4 working days.</li>
+                                <li>How can I pay? <br>You can pay for the products by card or cash. If you choose to pay cash there will be a 5RON added fee</li>
+                            </ol>
+                        </details>
+                    </section>
+                    <section id="linkuri">   
+                        <p>Learn more about the benefits of oatmeal <a href="https://www.webmd.com/diet/oatmeal-benefits" target="_blank">here</a></p>
+                        <p>Read our insurance certificate <a href="Resurse/pdf/certificate.pdf" download>here</a></p>
+                    </section>
+                </section>
+                <section id = "zona2">
+                    <section id = "orar">
+                        <table id="tab-orar">
+                            <thead>
+                                <tr>
+                                    <th>Period</th>
+                                    <th>Day</th>
+                                    <th>Morning delivery</th>
+                                    <th>Lunch break</th>
+                                    <th>Evening delivery</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="5">Working<br/>Days</td>
+                                    <td class="elem">Monday</td>
+                                    <td class="elem">10-12</td>
+                                    <td class="elem">12-14</td>
+                                    <td class="elem">14-20</td>
+                                </tr>
+                                <tr>
+                                    <td class="elem">Tuesday</td>
+                                    <td class="elem">9-12</td>
+                                    <td class="elem">12-14</td>
+                                    <td class="elem">14-21</td>
+                                </tr>
+                                <tr>
+                                    <td class="elem">Wednesday</td>
+                                    <td class="elem">9-11</td>
+                                    <td class="elem">11-13</td>
+                                    <td class="elem">14-21</td>
+                                </tr>
+                                <tr>
+                                    <td class="elem">Thurdsday</td>
+                                    <td class="elem">9-11</td>
+                                    <td class="elem">11-13</td>
+                                    <td class="elem">14-21</td>
+                                </tr>
+                                <tr>
+                                    <td class="elem">Friday</td>
+                                    <td class="elem">9-12</td>
+                                    <td class="elem">12-14</td>
+                                    <td class="elem">14-19</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="2">Weekend</td>
+                                    <td class="elem">Saturday</td>
+                                    <td class="elem">10-12</td>
+                                    <td class="elem">12-13</td>
+                                    <td class="elem">13-16</td>
+                                </tr>
+                                <tr>
+                                    <td class="elem">Sunday</td>
+                                    <td class="elem">10-14</td>
+                                    <td class="elem">closed</td>
+                                    <td class="elem">closed</td>
+                                </tr>
+                            </tbody>
+                            <caption>Delivery Program</caption>
+                        </table> 
+                    </section>
+                </section>
+                <section id = "zona3">
+                    <h2  class = "titluri">Calendar</h2>
+                <div id="calendar">
+                    <div>L</div>
+                    <div>Ma</div>
+                    <div>Mi</div>
+                    <div>J</div>
+                    <div>V</div>
+                    <div>S</div>
+                    <div>D</div>
+                <% 
+                nrZile=[31,28,31,30,31,30,31,31,30,31,30,31];
+                
+                d=new Date(); //observatie: este data serverului nu a clinetului; codul ejs fiind compilat pe server
+                anCurent=d.getFullYear();
+                lunaCurenta=d.getMonth();
+                if(anCurent%400==0 || (anCurent%4==0 && anCurent%100!=0)) nrZile=29;
+                let nrZileCalendar=nrZile[lunaCurenta]
+                primaZiLuna=new Date(anCurent, lunaCurenta, 1);
+                ultimaZiLuna=new Date(anCurent, lunaCurenta, nrZileCalendar);
+                ziSaptPrimaZiLuna=(primaZiLuna.getDay()-1+7)%7;
+                ziSaptUltimaZiLuna=(ultimaZiLuna.getDay()-1+7)%7;
+                for (let i=0;i<ziSaptPrimaZiLuna;i++){
+                 %>
+                 <div></div> 
+                 <% } 
+
+                 
+                 for (let i=1;i<=nrZileCalendar;i++){
+                    var obiectEvenimente=null;
+                        if(locals.evenimente)
+                             obiectEvenimente=locals.evenimente.find(function(elem){ return elem.data.valueOf()==new Date(anCurent,lunaCurenta,i).valueOf()})
+                     if(obiectEvenimente)
+                     {
+                     %>
+                     <div class="zi eveniment" title="<%= obiectEvenimente.text %>"><%= i %></div> 
+                     <%
+                     }
+                     else{
+                    %>
+                    <div class="zi"><%= i %></div> 
+                    <% } 
+                } %>
+                </div>
+                
+            </section>
+                </section>
+                <section id = "zona4">
+                    <section id="products">
+                        <h2  class = "titluri">G-OAT Products</h2>
+                        <h3>Oatmeal</h3>
+                        <ul>
+                            <li>Strawberry jam oatmeal</li>
+                            <li>Peanutbutter oatmeal</li>
+                            <li>Honey-walnut oatmeal</li>
+                            <li>Berries 'n cream oatmeal</li>
+                        </ul>
+                        <h3>For the baby goats</h3>
+                        <ul>
+                            <li>Banana oatmeal puree</li>
+                            <li>Apple 'n Banana oatmeal puree</li>
+                            <li>Raspberry and carrot oatmeal puree</li>
+                        </ul>
+                        <h3>For the herd</h3>
+                        <ul>
+                            <li>Family pack 4+1 oatmeal</li>
+                            <li>Family pack <s>7+3</s> <ins>10+3</ins> oatmeal</li>
+                            <li>Family pack "the G-OAT experience"</li>
+                        </ul>
+                    </section>
+                </section>
+                <section id = "zona5">
+                    <h2 class = "titluri"> Online Users </h2>
+                    <% 
+                        if(locals.utiliz_online){
+                    %>
+                    <ul>
+                        <% for(let u of locals.utiliz_online){ %>
+                            <font color = <%- u.culoare_chat%>><li><%- u.username %>(<%- u.nume %>)</li></font>
+                        <% } %>
+                    </ul>
+                    <% } %>
+                </section>
+                <section id = "zona6">
+                    <section id = "video">
+                        <video width="340" height="240" preload = "auto" controls="controls" poster = "/Resurse/videos/cover.jpg" muted>
+                            <source src="/Resurse/videos/vid_oat.mp4" type="video/mp4">
+                            <source src="/Resurse/videos/vid_oat.ogv" type="video/ogv">
+                            <track default src="/Resurse/videos/tracks/track_en.vtt" kind="captions" srclang="en" label="english"/>
+                            <track  src="/Resurse/videos/tracks/track_ro.vtt" kind="captions" srclang="ro" label="romana" />
+                        </video>
+                    </section>
+                </section>
+                <section id = "zona7">
+                    <h2 class = "titluri">Server info</h2>
+                    <p>Location <%= locals.locatie %></p>
+                    <p><%- locals.ip %></p>
+                    <%
+                dataServer=new Date();
+                sirData=dataServer.getHours()+":"+dataServer.getMinutes()+":"+dataServer.getSeconds()
+
+                %>
+                <p>Server hour:<span id="data_server"><%= sirData %></span></p>
+                <p>Client hour:<span id="data_client"></span></p>
+                <script>
+                    function zero(nr){
+                        if (nr<10) return "0"+nr;
+                        return nr;
+                    }
+                    
+                    d=new Date()
+                    document.getElementById("data_client").innerHTML=zero(d.getHours())+":"+zero(d.getMinutes())+":"+zero(d.getSeconds());
+
+                    function actualizeazaElemData(id_div){
+                        var data_div=document.getElementById(id_div);
+                        if (data_div.innerHTML!="")
+                        {
+                            var timp=data_div.innerHTML.split(":")
+                            var dt=new Date(2000,1,15, timp[0],timp[1], timp[2] );//nu conteaza data (am pus valori random pentru an, luna si zi) ci timpul
+                        }
+                        else
+                            var dt=new Date();
+                        dt.setSeconds(dt.getSeconds()+1)
+                        data_div.innerHTML=zero(dt.getHours())+":"+zero(dt.getMinutes())+":"+zero(dt.getSeconds());
+                    }
+                    function actualizeazaData(){
+                        actualizeazaElemData("data_client");
+                        actualizeazaElemData("data_server");
+                    }
+                    actualizeazaData()
+                    setInterval(actualizeazaData,1000)
+                </script>
+                </section>
+            </div>
+        </main>
+        <%- include ("../fragmente/footer.ejs") %>
+    </body>
+</html>

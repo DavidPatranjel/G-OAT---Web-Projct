@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>G-OAT - Chat</title>
+		<%- include("../fragmente/head") %>
+		<link rel="stylesheet" type="text/css" href="/Resurse/css/chat.css" />
+		<% let  p = locals.s_port;%>
+		<script>
+			port = p;
+		</script>
+        <script type="text/javascript" src="/Resurse/biblioteci/client-dist/socket.io.js"></script> 
+        <script src="/Resurse/js/chat.js" crossorigin></script>
+	</head>
+	<body>
+        <header>
+        <%- include("../fragmente/header") %>
+        </header>
+        <main>
+        <h1>Live chat</h1>
+        <p>Talk with you favourite G-OAT friends</p>
+		<div id="chat">
+			<div id="mesaje_chat">
+			</div>
+			<label>
+			Username: <input type="text" id="nume" name="nume" value="<%-locals.utilizator.username%>" readonly>
+			</label><br/>
+			<label>
+			Message: <textarea id="mesaj" name="mesaj" value="bau! "></textarea>
+			</label><br/>
+			<label>
+			<select id="culoare" name="culoare">
+			<option value="<%- locals.utilizator.culoare_chat%>" selected><%- locals.utilizator.culoare_chat%></option>
+			</select>
+			</label><br/>
+			<button onclick="trimite()">Send</button>
+		</div>
+        </main>
+		<%- include("../fragmente/footer") %>
+	</body>
+</html>

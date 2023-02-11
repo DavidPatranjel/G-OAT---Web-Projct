@@ -1,0 +1,870 @@
+const express= require("express");
+const fs=require("fs");
+const sharp=require("sharp");
+const  ejs=require("ejs");
+const sass=require("sass");
+const {Client}=require("pg");
+const { Console } = require("console");
+const formidable = require("formidable");
+const crypto = require("crypto");
+const session = require("express-session");
+const path = require("path");
+const nodemailer = require("nodemailer");
+const { CallTracker } = require("assert");
+const html_to_pdf = require("html-pdf-node");
+const juice = require("juice");
+var QRCode = require("qrcode");
+const helmet = require("helmet");
+const request = require("request");
+const xmljs = require('xml-js');
+const mongodb=require('mongodb');
+const http=require('http')
+const socket = require('socket.io');
+const bodyParser = require('body-parser');
+
+//var galerie = require("./Resurse/roots/galerie");
+var url = "mongodb://localhost:27017";
+
+const obGlobal={
+    obImagini:null, 
+    obErori:null, 
+    emailServer:"whoisdave24@gmail.com",
+    protocol: null,
+    numeDomeniu: null, 
+    port: 8080, 
+    sirAlphaNum: "",
+    clientMongo:mongodb.MongoClient
+};
+if(process.env.SITE_ONLINE){
+    obGlobal.protocol = "https://";
+    obGlobal.numeDomeniu = "g-oat.herokuapp.com"
+    var client=new Client({
+        user: "*****", 
+        password: "*****", 
+        database:"*****", 
+        host:"*****", 
+        port:5432, 
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+}
+else{
+    obGlobal.protocol = "http://";
+    obGlobal.numeDomeniu = "localhost:"+obGlobal.port;
+    var client=new Client({user: "lab1512", password: "lab1512", database:"ovaz", host:"localhost", port:5432});
+
+}
+
+obGlobal.clientMongo.connect(url, function(err, bd) {
+    if (err) console.log(err);
+    else{
+        obGlobal.bdMongo = bd.db("proiect_web");
+    }
+});
+client.connect();
+
+foldere = ["temp", "poze_uploadate"];
+for(let folder of foldere){
+    let calefolder = path.join(__dirname, folder)
+    if(!fs.existsSync(calefolder)){
+        fs.mkdirSync(calefolder);
+    }
+}
+
+app= express();
+app.use(["/mesaj", "/contact"], express.json({limit:'2mb'}));
+app.use(helmet.frameguard());
+app.use(["/produse_cos","/cumpara"],express.json({limit:'2mb'}));
+app.use(session({ ///aici se creeaza proprietatea session a requestului - pot folosi req.session
+    secret: 'abcdefg',//folosit de express session pentru criptarea id-ului de sesiune
+    resave: true,
+    saveUninitialized: false
+}));
+app.set("view engine","ejs");
+app.use("/Resurse", express.static(__dirname+"/Resurse"))
+app.use("/poze_uploadate", express.static(__dirname+"/poze_uploadate"))
+
+app.get("/*",function(req,res,next){
+    let id_utiliz = req.session.utilizator ? req.session.utilizator.id : null;
+    let queryInsert = `insert into accesari (ip, user_id, pagina) values ('${getIp(req)}', ${id_utiliz}, '${req.url}')`;
+    client.query(queryInsert, function(err, rezQuerry){
+        if(err) console.log(err);
+    })
+    next();
+});
+
+var ipuri_active={};
+
+app.all("/*",function(req,res,next){
+    let ipReq=getIp(req);
+    let ip_gasit=ipuri_active[ipReq+"|"+req.url];
+    timp_curent=new Date();
+    if(ip_gasit){
+    
+        if( (timp_curent-ip_gasit.data)< 10*1000) {//diferenta e in milisecunde; verific daca ultima accesare a fost pana in 10 secunde
+            if (ip_gasit.nr>8){//mai mult de 8 cereri 
+                res.send("<h1>Too many requests in a short interval of time!</h1>");
+                ip_gasit.data=timp_curent
+                return;
+            }
+            else{  
+                
+                ip_gasit.data=timp_curent;
+                ip_gasit.nr++;
+            }
+        }
+        else{
+            //console.log("Resetez: ", req.ip+"|"+req.url, timp_curent-ip_gasit.data)
+            ip_gasit.data=timp_curent;
+            ip_gasit.nr=1;//a trecut suficient timp de la ultima cerere; resetez
+        }
+    }
+    else{
+        ipuri_active[ipReq+"|"+req.url]={nr:1, data:timp_curent};
+        //console.log("am adaugat ", req.ip+"|"+req.url);
+        //console.log(ipuri_active);        
+
+    }
+    let comanda_param= `insert into accesari(ip, user_id, pagina) values ($1::text, $2,  $3::text)`;
+    //console.log(comanda);
+    if (ipReq){
+        var id_utiliz=req.session.utilizator?req.session.utilizator.id:null;
+        //console.log("id_utiliz", id_utiliz);
+        client.query(comanda_param, [ipReq, id_utiliz, req.url], function(err, rez){
+            if(err) console.log(err);
+        });
+    }
+    next();   
+}); 
+
+function stergeAccesariVechi(){
+    let queryDelete = `delete from accesari where now()-data_accesare > interval '10 minutes' `;
+    client.query(queryDelete, function(err, rezQuerry){
+        if(err) console.log(err);
+    })
+}
+
+stergeAccesariVechi();
+setInterval(stergeAccesariVechi, 10*60*1000);
+
+console.log("Director proiect:",__dirname);
+
+async function trimiteMail(email, subiect, mesajText, mesajHtml, atasamente=[]){
+    var transp= nodemailer.createTransport({
+        service: "gmail",
+        secure: false,
+        auth:{//date login 
+            user:obGlobal.emailServer,
+            pass:"ixabxdxlcazgcrqo"
+        },
+        tls:{
+            rejectUnauthorized:false
+        }
+    });
+    //genereaza html
+    await transp.sendMail({
+        from:obGlobal.emailServer,
+        to:email,
+        subject:subiect,//"Te-ai inregistrat cu succes",
+        text:mesajText, //"Username-ul tau este "+username
+        html: mesajHtml,// `<h1>Salut!</h1><p style='color:blue'>Username-ul tau este ${username}.</p> <p><a href='http://${numeDomeniu}/cod/${username}/${token}'>Click aici pentru confirmare</a></p>`,
+        attachments: atasamente
+    })
+    console.log("trimis mail");
+}
+
+optiuniMeniu = []
+client.query("select * from unnest(enum_range(null::categ_oatmeal))", function(err, rezCateg){
+    optiuniMeniu = rezCateg.rows;
+});
+
+app.use("/*", function(req, res, next){
+    res.locals.categorii = optiuniMeniu;    
+    res.locals.utilizator = req.session.utilizator;
+    res.locals.mesajLogin = req.session.mesajLogin;
+    req.session.mesajLogin = null;
+    console.log(optiuniMeniu);
+    next();
+});
+app.get(["/", "/index", "/home"], function(req, res){
+    querySelect = "select username, nume, culoare_chat from utilizatori where utilizatori.id in (select distinct user_id from accesari where now()-data_accesare <= interval '5 minutes')"
+    client.query(querySelect, function(err, rezQuery){
+        let utiliz_online = [];
+        var evenimente=[];
+        var locatie="";
+        if(err) console.log(err);
+        else{
+            utiliz_online = rezQuery.rows
+        }
+        request('https://secure.geobytes.com/GetCityDetails?key=7c756203dbb38590a66e01a5a3e1ad96&fqcn=109.99.96.15', //se inlocuieste cu req.ip; se testeaza doar pe Heroku
+            function (error, response, body) {
+            if(error) {console.error('error:', error)}
+            else{
+                var obiectLocatie=JSON.parse(body);
+                console.log(obiectLocatie);
+                locatie=obiectLocatie.geobytescountry+" "+obiectLocatie.geobytesregion
+            }
+    
+       
+        var texteEvenimente=["Free Delivery", "G-OAT Day", "10% Discount", "50% Discount for babies", "20% Discount"];
+        dataCurenta=new Date();
+        for(i=0;i<texteEvenimente.length;i++){
+            let data_event = new Date(dataCurenta.getFullYear(), dataCurenta.getMonth(), Math.ceil(Math.random()*27) );
+            evenimente.push({data:data_event, text:texteEvenimente[i]});
+        }
+        res.render("pagini/index", {ip:getIp(req), utiliz_online:utiliz_online, evenimente: evenimente, locatie:locatie});
+    });
+});
+})
+
+////////////// Contact
+caleXMLMesaje="Resurse/xml/contact.xml";
+headerXML=`<?xml version="1.0" encoding="utf-8"?>`;
+function creeazaXMlContactDacaNuExista(){
+    if (!fs.existsSync(caleXMLMesaje)){
+        let initXML={
+            "declaration":{
+                "attributes":{
+                    "version": "1.0",
+                    "encoding": "utf-8"
+                }
+            },
+            "elements": [
+                {
+                    "type": "element",
+                    "name":"contact",
+                    "elements": [
+                        {
+                            "type": "element",
+                            "name":"mesaje",
+                            "elements":[]                            
+                        }
+                    ]
+                }
+            ]
+        }
+        let sirXml=xmljs.js2xml(initXML,{compact:false, spaces:4});//obtin sirul xml (cu taguri)
+        console.log(sirXml);
+        fs.writeFileSync(caleXMLMesaje,sirXml);
+        return false; //l-a creat
+    }
+    return true; //nu l-a creat acum
+}
+
+function parseazaMesaje(){
+    let existaInainte=creeazaXMlContactDacaNuExista();
+    let mesajeXml=[];
+    let obJson;
+    if (existaInainte){
+        let sirXML=fs.readFileSync(caleXMLMesaje, 'utf8');
+        obJson=xmljs.xml2js(sirXML,{compact:false, spaces:4});
+        
+
+        let elementMesaje=obJson.elements[0].elements.find(function(el){
+                return el.name=="mesaje"
+            });
+        let vectElementeMesaj=elementMesaje.elements?elementMesaje.elements:[];// conditie ? val_true: val_false
+        console.log("Mesaje: ",obJson.elements[0].elements.find(function(el){
+            return el.name=="mesaje"
+        }))
+        let mesajeXml=vectElementeMesaj.filter(function(el){return el.name=="mesaj"});
+        return [obJson, elementMesaje,mesajeXml];
+    }
+    return [obJson,[],[]];
+}
+
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+app.post("/contact", urlencodedParser, function(req, res){
+    let obJson, elementMesaje, mesajeXml;
+    [obJson, elementMesaje, mesajeXml] =parseazaMesaje();
+        
+    let u= req.session.utilizator?req.session.utilizator.username:"anonim";
+    let mesajNou={
+        type:"element", 
+        name:"mesaj", 
+        attributes:{
+            username:u, 
+            data:new Date()
+        },
+        elements:[{type:"text", "text":req.body.mesaj}]
+    };
+    if(elementMesaje.elements)
+        elementMesaje.elements.push(mesajNou);
+    else 
+        elementMesaje.elements=[mesajNou];
+    let sirXml=xmljs.js2xml(obJson,{compact:false, spaces:4});
+    console.log("XML: ",sirXml);
+    fs.writeFileSync("Resurse/xml/contact.xml",sirXml);
+    
+    res.render("pagini/contact",{ utilizator:req.session.utilizator, mesaje:elementMesaje.elements})
+});
+
+///////////////
+
+app.get("/eroare", function(req, res){
+    randeazaEroare(res,1,"Titlu schimbat");
+})
+
+app.get("/produse", function(req, res){
+        client.query("select * from unnest(enum_range(null::tipuri_produse))", function(err, rezMilk){
+            client.query("select * from unnest(enum_range(null::categ_oatmeal))", function(err, rezCateg){
+                var cond_where=req.query.tip ? ` categorie='${req.query.tip}'` : " 1=1";
+                client.query("select * from ovaz where "+cond_where, function(err, rezQuery)
+                {
+                    console.log(err);
+                    res.render("pagini/produse", {produse:rezQuery.rows, optiuni: rezCateg.rows, milk_type:rezMilk.rows});
+                });
+            });
+        });
+})
+app.get("/produs/:id", function(req, res){
+    var querySel = `select * from ovaz where id=$1`;
+    client.query(querySel, [req.params.id], function(err, rezQuery)
+    {
+        console.log(err);
+        console.log(rezQuery);
+        res.render("pagini/produs", {prod:rezQuery.rows[0]});
+    });
+})
+///galerie(app);
+var nrimaginiAleator;
+    app.get("/gallery", function(req, res){
+                let poze = [];
+                let i = 0;
+                let d = new Date();
+                let sfert = 1+Math.floor(d.getMinutes()/15);
+                for(let imag of obImagini.imagini){
+                    let sfert_poza = Number(imag.sfert_ora);
+                    if(sfert == sfert_poza){
+                        poze.push(imag);
+                        i++;
+                    }
+                    if(i == 10){
+                        break;
+                    }
+                }
+                var nrimagini=[3,6,9,12];
+                var indiceAleator = Math.floor(Math.random()*nrimagini.length);
+                nrimaginiAleator = nrimagini[indiceAleator];
+                res.render("pagini/gallery", {ip:req.ip, imagini:poze, nrimg:nrimaginiAleator});
+    })
+    app.get("*/galerie-animata.css",function(req,res){
+        var sirScss=fs.readFileSync(__dirname+"/Resurse/scss/galerie_animata.scss").toString("utf-8");
+        var culori=["red","blue","purple"];
+        var indiceAleator = Math.floor(Math.random()*culori.length);
+        var culoareAleatoare = culori[indiceAleator];
+        //console.log(nrimaginiAleator);
+        rezScss = ejs.render(sirScss,{culoare:culoareAleatoare, nrimagini:nrimaginiAleator});
+        ///console.log(rezScss);
+        var caleScss = __dirname+"/temp/galerie_animata.scss";
+        fs.writeFileSync(caleScss, rezScss);
+        try{
+            rezCompilare=sass.compile(caleScss,{sourceMap:true});
+            var caleCss = __dirname+"/temp/galerie_animata.css";
+            fs.writeFileSync(caleCss,rezCompilare.css);
+            res.setHeader("Content-Type","text/css");
+            res.sendFile(caleCss);
+        }
+        catch(err){
+            console.log(err);
+            res.send("Eroare");
+        }
+    });
+/*---COS VIRTUAL---*/
+app.post("/produse_cos", function(req, res){
+    if(req.body.ids_prod.lenght != 0){
+        let querySelect=`select id, nume, descriere, pret, gramaj, imagine from ovaz where  id in (${req.body.ids_prod.join(",")})`;
+        client.query(querySelect, function(err, rezQuery){
+            if(err){
+                console.log(err);
+                res.send(rezQuery.rows);
+            }
+            res.send(rezQuery.rows);
+        });
+    }else{
+        res.send([]);
+    }
+})
+
+app.post("/cumpara",function(req, res){
+    if(!req.session.utilizator){
+        res.write("Please log in before making a purchase!");res.end();
+        return;
+    }
+    //TO DO verificare id-uri pentru query-ul la baza de date
+    client.query("select id, nume, pret, gramaj, calorii, categorie, imagine from ovaz where id in ("+req.body.ids_prod+")", function(err,rez){
+        console.log(err, rez);
+        let rezFactura=ejs.render(fs.readFileSync("views/pagini/factura.ejs").toString("utf8"),{utilizator:req.session.utilizator,produse:rez.rows, protocol:obGlobal.protocol, domeniu:obGlobal.numeDomeniu});
+        console.log(rezFactura);
+        let options = { format: 'A4', args: ['--no-sandbox', '--disable-extensions',  '--disable-setuid-sandbox'] };
+
+        let file = { content: juice(rezFactura, {inlinePseudoElements:true}) };
+       
+        html_to_pdf.generatePdf(file, options).then(function(pdf) {
+            if(!fs.existsSync("./temp"))
+                fs.mkdirSync("./temp");
+            var numefis="./temp/test"+(new Date()).getTime()+".pdf";
+            fs.writeFileSync(numefis,pdf);
+            let mText=`Hello ${req.session.utilizator.username}, we have prepared your invoice.`;
+		    let mHtml=`<h1>Hello!</h1><p>${mText}</p>`;
+
+            trimiteMail(req.session.utilizator.email,"G-OAT Invoice", mText, mHtml, [{ 
+                                                    filename: 'Invoice.pdf',
+                                                    content: fs.readFileSync(numefis)
+                                                }]);
+            res.write("Your order has been registered!");res.end();
+            let factura= { data: new Date(), username: req.session.utilizator.username, produse:rez.rows };
+            obGlobal.bdMongo.collection("facturi").insertOne(factura, function(err, res) {
+                if (err) console.log(err);
+                else{
+                    console.log("Am inserat factura in mongodb");
+                    //doar de debug:
+                    obGlobal.bdMongo.collection("facturi").find({}).toArray(function(err, result) {
+                        if (err) console.log(err);
+                        else console.log(result);
+                      });
+                }
+            });
+        });      
+    });   
+});
+
+
+var intervaleAscii = [[48,57],[65,90],[97,122]];
+for(let interval of intervaleAscii){
+    for(let i=interval[0]; i<=interval[1]; i++){
+        obGlobal.sirAlphaNum += String.fromCharCode(i);
+    }
+}
+
+function genereazaToken(n){
+    var token = "";
+    for(let i = 0; i<n;i++){
+        token += obGlobal.sirAlphaNum[Math.floor(Math.random()*obGlobal.sirAlphaNum.length)];
+    }
+    return  token;  
+}
+
+parolaServer = "tehniciweb";
+app.post("/inreg",function(req, res){
+    var extensii = ["exe", "html", "css", "js"];
+    var username;
+    var formular= new formidable.IncomingForm()
+    formular.parse(req, function(err, campuriText, campuriFisier ){
+        console.log(campuriText);
+        console.log(campuriFisier.poza);
+        var eroare="";
+        if(campuriText.username==""){
+            eroare+="Username missing.";
+        }
+        if(!campuriText.username.match(new RegExp("^[A-Za-z0-9]+$"))){
+            eroare+="Username does not respect the pattern. ";
+        }
+        if(!campuriText.telefon.match(new RegExp("\\+?0\\d{9}"))){
+            eroare+="Phone number does not respect the pattern. ";
+        }
+        if(!campuriText.parola.match(new RegExp("^[A-Za-z0-9]+$"))){
+            eroare+="Password does not respect the pattern. ";
+        }
+        if(!campuriText.nume.match(new RegExp("^[A-Za-z]+$"))){
+            eroare+="Name does not respect the pattern. ";
+        }
+        let list_ext = []
+        let verificare_nume = false;
+        for(let ext_poza of campuriFisier.poza.originalFilename.split(".") ){
+            if(extensii.includes(ext_poza)){
+                list_ext.push(ext_poza);
+            }
+            if(ext_poza.includes("%") || ext_poza.includes("..")){
+                verificare_nume = true;
+            }
+        }
+        console.log(list_ext);
+        if(!eroare){
+            queryUtiliz=`select username from utilizatori where username=$1::text`;
+            client.query(queryUtiliz,[campuriText.username], function(err, rezUtiliz){
+                console.log(err);
+                if (rezUtiliz.rows.length!=0){
+                    eroare+="Username exists!";
+                    res.render("pagini/inregistrare", {err: "Error: "+eroare});
+                }
+                else if(list_ext.length || verificare_nume){
+                    eroare+="Wrong file name or type!";
+                    res.render("pagini/inregistrare", {err: "Error: "+eroare});
+                }
+                else{
+                    var token1 = genereazaToken(50);
+                    d = new Date().getTime();
+                    var token2 = d;
+                    var parolaCriptata=crypto.scryptSync(campuriText.parola,parolaServer, 64).toString('hex');
+                    var comandaInserare=`insert into utilizatori (username, nume, prenume, parola, email, culoare_chat, cod1, telefon, cod2, photo_path) 
+                        values ($1::text, $2::text, $3::text, $4::text,  $5::text,  $6::text,  $7::text,  $8::text,  $9::text,  $10::text ) `;
+                    client.query(comandaInserare, [campuriText.username, campuriText.nume, campuriText.prenume, parolaCriptata, campuriText.email, 
+                        campuriText.culoare_chat, token1, campuriText.telefon, token2, campuriFisier.poza.originalFilename], function(err, rezInserare){
+                        console.log(err);
+                        if(err){
+                            res.render("pagini/inregistrare", {err: "Database error!"});
+                        }
+                        else{
+                            res.render("pagini/inregistrare", {raspuns: "Your account has been created. Please check your email for confirmation!"});
+                            // http://localhost:8080/cod/[username]/[token]
+                            let linkConfirmare = `${obGlobal.protocol}${obGlobal.numeDomeniu}/cod_mail/${token1}-${token2}/${campuriText.username}`;
+                            trimiteMail(campuriText.email, `Welcome, ${campuriText.nume}`, "text",`<h2>Hello!</h2><p>Your username is ${campuriText.username} on our <u><b><i>G-OAT</u></b></i> website.</p><p>Confirmation link: <a href='${linkConfirmare}'>${linkConfirmare}</a></p>`);
+                        }
+                    });
+                    
+                }
+            })
+        }
+        else
+            res.render("pagini/inregistrare", {err: "Error: "+eroare});
+    });
+    formular.on("field", function(nume,val){  // 1
+        if(nume == "username")
+            username = val;
+    })
+    formular.on("fileBegin", function(nume,fisier){ //2
+        caleutilizator = path.join(__dirname, "poze_uploadate", username);
+        if(!fs.existsSync(caleutilizator)){
+            fs.mkdirSync(caleutilizator);
+        }
+        fisier.filepath = path.join(caleutilizator, fisier.originalFilename);
+    })    
+    formular.on("file", function(nume,fisier){//3
+        var comandaUpdate = `update utilizatori set photo_path  = $1::text where username = $2::text`;
+        client.query(comandaUpdate, [fisier.filepath.toString("utf8"), username], function(err, rezUpdate){
+            if(err){
+                res.render("pagini/inregistrare", {err: "Database error!"});
+            }
+        });
+    });
+});
+app.get("/cod_mail/:token1-:token2/:username", function(req, res){
+    var comandaSelect = `update utilizatori set confirmat_mail=true where username = '${req.params.username}' and cod1= '${req.params.token1}' and cod2= '${req.params.token2}'`;
+    client.query(comandaSelect, function(err, rezUprate){
+        if(err){
+            randeazaEroare(res, 2);
+        }
+        else{
+            if(rezUprate.rowCount == 1){
+                res.render("pagini/confirmare")
+            }
+            else{
+                randeazaEroare(res, 2, "Eroare link confirmare", "Nu e userul sau linkul corect");
+            }
+        }
+    });
+});
+
+app.post("/login",function(req, res){
+    var formular= new formidable.IncomingForm()
+    formular.parse(req, function(err, campuriText, campuriFisier){
+        var parolaCriptata=crypto.scryptSync(campuriText.parola,parolaServer, 64).toString('hex');
+        console.log(querySelect);
+        var querySelect=`select * from utilizatori where username=$1::text and parola=$2::text  and confirmat_mail = true`;
+
+        client.query(querySelect,[campuriText.username, parolaCriptata],function(err, rezSelect){
+            if(err){
+                console.log(err);
+                randeazaEroare(res, 2);
+            }
+            else{
+                if(rezSelect.rows.length==1){ //daca am utilizatorul si a dat credentiale corecte
+                    req.session.utilizator={
+                        id: rezSelect.rows[0].id,
+                        nume:rezSelect.rows[0].nume,
+                        prenume:rezSelect.rows[0].prenume,                        
+                        username:rezSelect.rows[0].username,                        
+                        email:rezSelect.rows[0].email,
+                        culoare_chat:rezSelect.rows[0].culoare_chat,                        
+                        rol:rezSelect.rows[0].rol,
+                        telefon:rezSelect.rows[0].telefon,
+                        poza_utilizator:rezSelect.rows[0].photo_path
+                    }
+                    res.redirect("/index");
+                }else{
+                    req.session.mesajLogin = "Failed login!";
+                    res.redirect("/login");
+                }
+            }
+        } )
+    })
+});
+
+app.get("/logout", function(req, res){
+    req.session.destroy();
+    res.locals.utilizator = null;
+    res.render("pagini/logout");
+})
+
+app.get("/useri", function(req, res){
+    if(req.session.utilizator && req.session.utilizator.rol == "admin"){
+        var querySel = `select * from utilizatori where username <> $1::text`;
+        client.query(querySel,[req.session.utilizator.username], function(err, rezQuery){
+            console.log(err);
+            res.render("pagini/useri", {useri:rezQuery.rows});
+        });
+    }else{
+        randeazaEroare(res,403);
+    }
+})
+
+app.post("/sterg", function(req,res){
+    if(req.session.utilizator){
+        var formular= new formidable.IncomingForm()
+        formular.parse(req, function(err, campuriText, campuriFisier ){
+            var parolaCriptata=crypto.scryptSync(campuriText.parola,parolaServer, 64).toString('hex');
+            console.log("----------");
+            let querySel = `select * from utilizatori where username=$1::text and parola=$2::text`;
+            console.log(querySel, campuriText.username, parolaCriptata);
+            client.query(querySel, [campuriText.username, parolaCriptata], function(err, rezSelect){
+                if(rezSelect.rowCount == 0 || err){
+                    randeazaEroare(res,2, "Wrong password", "Wrong password! Try again!");
+                }
+                else{
+                    let queryDel = `delete from accesari where user_id=$1`;
+                    console.log("----------");
+                    console.log(queryDel, rezSelect.rows[0].id);
+                    client.query(queryDel, [rezSelect.rows[0].id], function(err, rezQuery){
+                        console.log(rezQuery, err);
+                        if(err){
+                            randeazaEroare(res,2);
+                        }
+                        else{
+                            let queryDel2 = `delete from utilizatori where id=$1`;
+                            client.query(queryDel2, [rezSelect.rows[0].id], function(err, rezQuery){
+                                if(err){
+                                    randeazaEroare(res,2);
+                                }
+                                else{
+                                    trimiteMail(rezSelect.rows[0].email, `Sad to see you go!`, "text",`<h2>Hello!</h2><p>Your account has been deleted. Good bye!`);
+                                    req.session.destroy();
+                                    res.locals.utilizator = null;
+                                    res.redirect("/conf-stergere");
+                                }
+                            })
+                        }
+                    })
+                }
+            });
+        });
+    }else{
+        randeazaEroare(403);
+    }
+});
+
+app.post("/promote", function(req,res){
+    console.log("promote");
+    var formular= new formidable.IncomingForm()
+    formular.parse(req, function(err, campuriText, campuriFisier ){
+        let queryUpdate = `update utilizatori set rol = 'admin' where id=$1 and rol <> 'admin'`;
+        client.query(queryUpdate, [campuriText.id_utiliz], function(err, rezQuery){
+            let selectQuery = `select email from utilizatori where id=$1`;
+            client.query(selectQuery,[campuriText.id_utiliz], function(err, rezSelect){
+                console.log(rezSelect.rows[0].email);
+                trimiteMail(rezSelect.rows[0].email, `Congrats!`, "text",`<h2>Hello!</h2><p>Your account has been promoted to an admin account!`);
+                console.log(err);
+                res.redirect("/useri");
+            })
+        });
+    });
+});
+
+app.post("/demote", function(req,res){
+    console.log("demote");
+    var formular= new formidable.IncomingForm()
+    formular.parse(req, function(err, campuriText, campuriFisier ){
+        let queryUpdate = `update utilizatori set rol = 'comun' where id=$1 and rol <> 'comun'`;
+        client.query(queryUpdate, [campuriText.id_utiliz], function(err, rezQuery){
+            let selectQuery = `select email from utilizatori where id=$1`;
+            client.query(selectQuery, [campuriText.id_utiliz], function(err, rezSelect){
+                console.log(rezSelect.rows[0].email);
+                trimiteMail(rezSelect.rows[0].email, `Sad news!`, "text",`<h2>Hello!</h2><p>Your account has been demoted to a common account!`);
+                console.log(err);
+                res.redirect("/useri");
+            })
+            
+        });
+    });
+});
+
+
+// ---------------- Update profil -----------------------------
+ 
+app.post("/profil", function(req, res){
+    console.log("profil");
+    if (!req.session.utilizator){
+        res.render("pagini/eroare_generala",{text:"Nu sunteti logat."});
+        return;
+    }
+    var formular= new formidable.IncomingForm();
+ 
+    formular.parse(req,function(err, campuriText, campuriFile){
+       
+        var criptareParola=crypto.scryptSync(campuriText.parola,parolaServer, 64).toString('hex');
+ 
+        //TO DO query
+        var queryUpdate=`update utilizatori set nume=$1::text, prenume=$2::text, email=$3::text, culoare_chat=$4::text where parola = $5::text`;
+        console.log(queryUpdate);
+        client.query(queryUpdate, [campuriText.nume, campuriText.prenume, campuriText.email, campuriText.culoare_chat, criptareParola],  function(err, rez){
+            if(err){
+                console.log(err);
+                res.render("pagini/eroare_generala",{text:"Eroare baza date. Incercati mai tarziu."});
+                return;
+            }
+            console.log(rez.rowCount);
+            if (rez.rowCount==0){
+                res.render("pagini/profil",{mesaj:"Update-ul nu s-a realizat. Verificati parola introdusa."});
+                return;
+            }
+            else{
+                req.session.utilizator.nume = campuriText.nume;
+                req.session.utilizator.prenume = campuriText.prenume;
+                req.session.utilizator.email = campuriText.email;
+                req.session.utilizator.culoare_chat= campuriText.culoare_chat;
+            }
+           
+            //TO DO actualizare sesiune
+ 
+            res.render("pagini/profil",{mesaj:"Update-ul s-a realizat cu succes."});
+ 
+        });
+       
+ 
+    });
+});
+
+/*--- CHAT ---*/
+const server = new http.createServer(app);  
+//var  io= socket(server, { serveClient: false })
+var  io= socket(server)
+io = io.listen(server);
+io.on("connection", function (socket)  {  
+    console.log("Conectare!");
+	//if(!conexiune_index)
+	//	conexiune_index=socket
+    socket.on('disconnect', function() {conexiune_index=null;console.log('Deconectare')});
+});
+app.post('/mesaj', function(req, res) {
+
+	
+    console.log("primit mesaj");
+    //if(conexiune_index){
+
+        //trimit catre restul de utilizatori mesajul primit
+        io.sockets.emit('mesaj_nou', req.body.nume, req.body.culoare, req.body.mesaj);
+    //}
+    res.send("ok");
+});
+
+app.get("/chat", function(req, res){
+    if(req.session.utilizator){
+        res.render("pagini/chat");
+    }else{
+        randeazaEroare(res,403);
+    }
+})
+
+
+app.get("/*.ejs", function(req, res){
+    //res.sendFile(__dirname+"/index1.html");
+    ///res.status(403).render("pagini/403");
+    randeazaEroare(res, 403);
+
+})
+
+app.get("/*", function(req, res){
+    res.render("pagini"+req.url, function(err, rezRender){
+        if (err){
+            console.log(err);
+            if(err.message.includes("Failed to lookup view")){
+                //res.status(404).render("pagini/404");
+                randeazaEroare(res, 404);
+            }
+            else{
+                res.render("pagini/eroare_generala");
+            }
+        }
+        else{
+            console.log(rezRender);
+            res.send(rezRender);
+        }
+    });
+    res.end();
+})
+
+function getIp(req){//pentru Heroku
+    var ip = req.headers["x-forwarded-for"];//ip-ul userului pentru care este forwardat mesajul
+    if (ip){
+        let vect=ip.split(",");
+        return vect[vect.length-1];
+    }
+    else if (req.ip){
+        return req.ip;
+    }
+    else{
+     return req.connection.remoteAddress;
+    }
+}
+
+function creeazaImagini(){
+    var buf=fs.readFileSync(__dirname+"/Resurse/json/galerie.json").toString("utf8");
+    obImagini=JSON.parse(buf);//global
+    for (let imag of obImagini.imagini){
+        let nume_imag, extensie;
+        [nume_imag, extensie ]=imag.cale_imagine.split(".");
+        let dim_mic=175;
+        
+        imag.mic=`${obImagini.cale_galerie}/mic/${nume_imag}-${dim_mic}.webp` //nume-150.webp // "a10" b=10 "a"+b `a${b}`
+        imag.mare=`${obImagini.cale_galerie}/${imag.cale_imagine}`;
+        if (!fs.existsSync(imag.mic))
+            sharp(__dirname+"/"+imag.mare).resize(dim_mic).toFile(__dirname+"/"+imag.mic); 
+            
+        let dim_mediu=200;
+        
+        imag.mediu=`${obImagini.cale_galerie}/mediu/${nume_imag}-${dim_mic}.webp` //nume-150.webp // "a10" b=10 "a"+b `a${b}`
+        imag.mare=`${obImagini.cale_galerie}/${imag.cale_imagine}`;
+        if (!fs.existsSync(imag.mediu))
+            sharp(__dirname+"/"+imag.mare).resize(dim_mediu).toFile(__dirname+"/"+imag.mediu);
+    }
+}
+creeazaImagini();
+
+function creeazaErori(){
+    var buf=fs.readFileSync(__dirname+"/Resurse/json/erori.json").toString("utf8");
+    obErori=JSON.parse(buf);
+}
+creeazaErori();
+
+function randeazaEroare(res, identificator, titlu, text, imagine){
+    var eroare = obErori.erori.find(function(elem){return identificator == elem.identificator});
+    titlu = titlu || (eroare && eroare.titlu ) || "Error - Error";
+    text = text || (eroare && eroare.text) || "Your G-OAT page has generated an error!";
+    imagine = imagine || (eroare && obErori.cale_baza+"/"+eroare.imagine) || "/Resurse/img/erori/interzis.png";
+    if(eroare){
+        if(eroare && eroare.status){
+            res.status(eroare.identificator).render("pagini/eroare_generala",{titlu: eroare.titlu, text: eroare.text, imagine:obErori.cale_baza+"/"+eroare.imagine});
+        }
+        else{
+            res.render("pagini/eroare_generala",{titlu: titlu, text: text, imagine:imagine});
+        }
+    }
+}
+
+// Resetare folder imagini qr-code 
+
+cale_qr="./Resurse/img/qrcode";
+if (fs.existsSync(cale_qr))
+  fs.rmSync(cale_qr, {force:true, recursive:true});
+fs.mkdirSync(cale_qr);
+client.query("select id from ovaz", function(err, rez){
+    for(let prod of rez.rows){
+        let cale_prod=obGlobal.protocol+obGlobal.numeDomeniu+"/produs/"+prod.id;
+        QRCode.toFile(cale_qr+"/"+prod.id+".png",cale_prod);
+    }
+});
+
+var s_port=process.env.PORT || obGlobal.port;
+server.listen(s_port);
+console.log("A pornit")
