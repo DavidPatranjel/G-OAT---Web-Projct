@@ -1,0 +1,303 @@
+{
+	"cale_galerie":"Resurse/img/galerie",
+	"imagini": [
+		{
+			"cale_imagine":"ovaz-banana.png",
+			"titlu":"Banana Oats",
+			"descriere":"Banana Oats",
+			"sfert_ora":"3",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-borcan.png",
+			"titlu":"Oats To Go",
+			"descriere":"Oats To Go",
+			"sfert_ora":"3",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-capsuni.png",
+			"titlu":"Strawberry Oats",
+			"descriere":"Strawberry Oats",
+			"sfert_ora":"1",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-christmas.png",
+			"titlu":"Christmas Oats",
+			"descriere":"Christmas Oats",
+			"sfert_ora":"3",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-capsuni.png",
+			"titlu":"Strawberry Oats",
+			"descriere":"Strawberry Oats",
+			"sfert_ora":"4",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-christmas.png",
+			"titlu":"Christmas Oats",
+			"descriere":"Christmas Oats",
+			"sfert_ora":"4",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-dimi.png",
+			"titlu":"Morning Oats",
+			"descriere":"Morning Oats",
+			"sfert_ora":"2",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-granola.png",
+			"titlu":"Granola Oats",
+			"descriere":"Granola Oats",
+			"sfert_ora":"3",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-iaurt.png",
+			"titlu":"Yogurt Oats",
+			"descriere":"Yogurt Oats",
+			"sfert_ora":"2",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-banana.png",
+			"titlu":"Banana Oats",
+			"descriere":"Banana Oats",
+			"sfert_ora":"4",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-borcan.png",
+			"titlu":"Oats To Go",
+			"descriere":"Oats To Go",
+			"sfert_ora":"3",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-banana.png",
+			"titlu":"Banana Oats",
+			"descriere":"Banana Oats",
+			"sfert_ora":"2",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-iaurt.png",
+			"titlu":"Yogurt Oats",
+			"descriere":"Yogurt Oats",
+			"sfert_ora":"1",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-banana.png",
+			"titlu":"Banana Oats",
+			"descriere":"Banana Oats",
+			"sfert_ora":"1",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-borcan.png",
+			"titlu":"Oats To Go",
+			"descriere":"Oats To Go",
+			"sfert_ora":"1",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-capsuni.png",
+			"titlu":"Strawberry Oats",
+			"descriere":"Strawberry Oats",
+			"sfert_ora":"1",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-para.png",
+			"titlu":"Pear Oats",
+			"descriere":"Pear Oats",
+			"sfert_ora":"1",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-raw.png",
+			"titlu":"Banana Oats",
+			"descriere":"Oats And Musli",
+			"sfert_ora":"4",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-sweets.png",
+			"titlu":"Oat Sweets",
+			"descriere":"Oat Sweets",
+			"sfert_ora":"3",
+			"credits":""
+
+		},
+		{
+			"cale_imagine":"ovaz-choco.png",
+			"titlu":"Chocolate Oats",
+			"descriere":"Chocolate Oats",
+			"sfert_ora":"1",
+			"credits":"Ella Olsson - Chocolate Oatmeal, flickr, accesat la data de 23.03.2022"
+		},
+		{
+			"cale_imagine":"ovaz-raw.png",
+			"titlu":"Banana Oats",
+			"descriere":"Oats And Musli",
+			"sfert_ora":"1",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-sweets.png",
+			"titlu":"Oat Sweets",
+			"descriere":"Oat Sweets",
+			"sfert_ora":"1",
+			"credits":""
+
+		},
+		{
+			"cale_imagine":"ovaz-choco.png",
+			"titlu":"Chocolate Oats",
+			"descriere":"Chocolate Oats",
+			"sfert_ora":"1",
+			"credits":"Ella Olsson - Chocolate Oatmeal, flickr, accesat la data de 23.03.2022"
+		},
+		{
+			"cale_imagine":"ovaz-borcan.png",
+			"titlu":"Oats To Go",
+			"descriere":"Oats To Go",
+			"sfert_ora":"2",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-banana.png",
+			"titlu":"Banana Oats",
+			"descriere":"Banana Oats",
+			"sfert_ora":"2",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-capsuni.png",
+			"titlu":"Strawberry Oats",
+			"descriere":"Strawberry Oats",
+			"sfert_ora":"2",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-christmas.png",
+			"titlu":"Christmas Oats",
+			"descriere":"Christmas Oats",
+			"sfert_ora":"2",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-christmas.png",
+			"titlu":"Christmas Oats",
+			"descriere":"Christmas Oats",
+			"sfert_ora":"2",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-capsuni.png",
+			"titlu":"Strawberry Oats",
+			"descriere":"Strawberry Oats",
+			"sfert_ora":"2",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-christmas.png",
+			"titlu":"Christmas Oats",
+			"descriere":"Christmas Oats",
+			"sfert_ora":"2",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-christmas.png",
+			"titlu":"Christmas Oats",
+			"descriere":"Christmas Oats",
+			"sfert_ora":"4",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-borcan.png",
+			"titlu":"Oats To Go",
+			"descriere":"Oats To Go",
+			"sfert_ora":"4",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-capsuni.png",
+			"titlu":"Strawberry Oats",
+			"descriere":"Strawberry Oats",
+			"sfert_ora":"4",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-christmas.png",
+			"titlu":"Christmas Oats",
+			"descriere":"Christmas Oats",
+			"sfert_ora":"4",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-capsuni.png",
+			"titlu":"Strawberry Oats",
+			"descriere":"Strawberry Oats",
+			"sfert_ora":"4",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-choco.png",
+			"titlu":"Chocolate Oats",
+			"descriere":"Chocolate Oats",
+			"sfert_ora":"4",
+			"credits":"Ella Olsson - Chocolate Oatmeal, flickr, accesat la data de 23.03.2022"
+		},
+		{
+			"cale_imagine":"ovaz-raw.png",
+			"titlu":"Banana Oats",
+			"descriere":"Oats And Musli",
+			"sfert_ora":"4",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-sweets.png",
+			"titlu":"Oat Sweets",
+			"descriere":"Oat Sweets",
+			"sfert_ora":"4",
+			"credits":""
+
+		},
+		{
+			"cale_imagine":"ovaz-capsuni.png",
+			"titlu":"Strawberry Oats",
+			"descriere":"Strawberry Oats",
+			"sfert_ora":"3",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-para.png",
+			"titlu":"Pear Oats",
+			"descriere":"Pear Oats",
+			"sfert_ora":"3",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-raw.png",
+			"titlu":"Banana Oats",
+			"descriere":"Oats And Musli",
+			"sfert_ora":"3",
+			"credits":""
+		},
+		{
+			"cale_imagine":"ovaz-sweets.png",
+			"titlu":"Oat Sweets",
+			"descriere":"Oat Sweets",
+			"sfert_ora":"3",
+			"credits":""
+
+		}
+	]
+}

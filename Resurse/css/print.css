@@ -1,0 +1,113 @@
+/*Printare*/
+#watermark, #absolut{
+    display: none;
+}
+@media print {
+	h1{
+		margin-top: 50%;
+		text-align:center;
+		margin-left:1cm;
+	}
+    #grid-pagina{
+		font-size: 10px;
+		box-sizing:border-box;
+		page-break-before:always;
+		background-color: white;
+		/*
+			grid-template-rows: calc(100vh - 10px) 100vh 100vh 100vh;*/
+
+		display:block;
+		}
+		html, body {
+        width: 210mm;
+        /* height: 297mm; */
+        /*height: 282mm;*/
+				overflow:visible !important;
+		}
+		#watermark
+		{
+            z-index: 100;
+            width: 4cm;
+            height: 1cm;
+			display: block;
+			position: fixed;/*apare pe toate paginile*/
+			top:0;
+			color:rgba(0,0,0,0.4);
+			right:0;
+		}
+		#watermark::after{
+            text-align: center;
+            font-size: 20px;
+			opacity:0.4;
+			padding:5px;
+			display: block;
+			background: white;
+			border:3px solid black;
+			border-top-left-radius:10px;
+			border-bottom-left-radius:10px;
+			border-right:none;
+			content:"Patranjel\a David";
+            white-space: pre-wrap;
+		}
+        #video, .photos_oat, #retete, #galerie_statica, #link-top{
+            display: none;
+        }
+    #linkuri p a{
+        color: black;
+        font-weight: 100;
+    }
+	#footer{
+		page-break-before: always;
+	}
+    #banner{
+        position: absolute;
+		display: block;
+        top: 1110px;
+		text-align: center;
+        left: 200px;
+        width: 70vw;
+        border: 2px solid black;
+    }
+    nav ul.menu li{
+		background-color: transparent;
+		all: unset;
+    }
+    nav{
+		background-color: transparent;
+        all: unset;
+    }
+	nav ul.menu li a, nav ul.menu li div{
+		color: black;
+	}
+    ul.menu{
+		background-color: transparent;
+        all: unset;
+    }
+	nav .fa-solid{
+		display: none;
+	}
+	nav ul.menu li{
+		list-style-type: circle;
+	}
+	#btn_tema{
+		display: none;
+	}
+}   
+
+	@page {
+		size: A4 portrait;
+		margin-bottom:2cm;
+		margin-top:2cm;
+		counter-increment: page;
+			
+	}
+	@page:left{
+
+		margin-left:3cm;
+		margin-right:1cm;
+	}
+	@page:right{
+
+		margin-right:3cm;
+		margin-left:1cm;
+	}

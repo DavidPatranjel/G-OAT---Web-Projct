@@ -1,0 +1,38 @@
+html{
+    font-size:12px;
+}
+
+body{
+    --body-padding:0px;
+}
+h1{
+    text-align: center;
+}
+iframe{
+    width: 280px;
+    height: 155px;
+}
+.iframescreen{
+    width: 280px;
+}
+#grid-pagina{
+    display:block;
+}
+section{
+    margin-top:1.5rem;
+}
+.iframecolumn a{
+    font-weight: bold;
+}
+.photos_oat{
+    display: initial;
+}
+.oat{
+    padding: 5px;
+    text-align: center;
+    font-size: 15px;
+}
+#galerie_statica{
+    display: block;
+    text-align: center;
+}

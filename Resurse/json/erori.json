@@ -1,0 +1,37 @@
+{
+    "cale_baza": "/Resurse/img/erori",
+    "erori": [
+        {
+            "identificator":404,
+            "status":true,
+            "titlu":"404 - Page not found!",
+            "text": "Sorry! We are unable to find your page!",
+            "imagine":"404.jpg"
+        },
+        {
+            "identificator":403,
+            "status":true,
+            "titlu":"403 - Forbidden!",
+            "text": "Sorry! You don't have access to this page!",
+            "imagine":"403.jpg"
+        },
+        
+        {
+            "identificator":1,
+            "status":false,
+            "titlu":"Page in progress!",
+            "text": "Sorry, we are working on this page!",
+            "imagine":"workerr.jpg"
+        }
+        ,
+        
+        {
+            "identificator":2,
+            "status":false,
+            "titlu":"Database error!",
+            "text": "Please come back later!",
+            "imagine":"dataerr.jpg"
+        }
+    ]
+}
+  

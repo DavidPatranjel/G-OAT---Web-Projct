@@ -1,0 +1,67 @@
+/*facem vizibil iconul de hamburger menu*/
+#hamburger{
+    display:block;
+}
+/* implicit menul e ascuns*/
+ul.menu{
+    display:none;
+    position:absolute;
+    width:100%;
+}
+/*aici facem vizibil menul cand faem click pe hamburger menu*/
+#ch-menu:checked+ul.menu{
+    display: block;
+    z-index: 2;
+    position: relative;
+    transform-origin: 0 0;
+    animation-name: aparitie_hamburger;
+    animation-iteration-count:1;
+    animation-duration:0.6s;
+    animation-fill-mode:forwards;
+    animation-timing-function:linear;
+    transition: all 2s linear;
+}
+
+/*optiunile se intind pe toata latimea containerului*/
+nav ul.menu li{
+    width:100%;
+}
+/*menul sa vina deasupra continutul de mai jos, fara sa impinga continutul*/
+nav ul.menu>li ul{
+    position:absolute;
+    width:100%;
+    z-index:200;
+    transform:scale(1,1);
+}
+
+#main_page{
+    display: none;
+}
+
+#ch-menu:checked+ul.menu>li ul>*{
+    position:relative;
+    z-index:200;
+}
+nav ul.menu>li:hover>ul{
+    animation:none;
+    position:absolute;
+}
+ul.submenu>li>a:hover{
+    background-color: var(--baby-blue);
+    transition:all 0.6s linear;
+}
+ul.menu>li>a:hover, ul.menu>li>div:hover{
+    background-color: var(--baby-blue);
+    transition:all 0.6s linear;
+}
+ul.menu>li > a::before, ul.menu>li > div::before{
+    display: none;
+}
+@keyframes aparitie_hamburger{
+    0%{
+        clip-path: circle(0 at 0% 0%)
+    } 
+	100%{
+    	clip-path: circle(200% at 0% 0%)
+    }
+}

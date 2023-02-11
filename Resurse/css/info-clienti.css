@@ -1,0 +1,47 @@
+#creare-prajitura{
+    margin-left:3rem;
+}
+
+.titlu-grup-ingrediente{
+    text-transform: capitalize;
+    font-size:2em;
+    font-weight: bold;
+}
+
+.panouIngredient{
+    margin-bottom:0.5rem;
+}
+
+#creare-prajitura button{
+    width:7rem;
+    text-align: center;
+}
+.nume-ingredient{
+    font-weight:bold;
+    width:7rem;
+    display: inline-block;
+    text-transform: capitalize;
+    font-size: 14px;
+}
+
+
+.test{
+    background-color: var(--light-blue);
+    font-style: italic;
+    color: var(--dark-beige);
+    font-family: 'Fredoka One';
+    font-size: 22px;
+    text-align:center;
+
+}
+#descr{
+    font-style: italic;
+    color: var(--dark-beige);
+    font-family: 'Fredoka One';
+    font-size: 22px;
+    text-align:center;
+}
+h1{
+    font-size: 28px;
+
+}

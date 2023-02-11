@@ -1,0 +1,111 @@
+html{
+    --inaltime-menu:3rem;
+    --dark-blue: #70909e;
+    --light-blue:#e8f8ff;
+    --baby-blue:#bedceb;
+    --dark-beige:#9e8260;
+    --light-beige: #ebd7be;
+}
+
+nav ul.menu ul{
+    /*implicit submenul e ascuns*/
+    display: none;
+    position: absolute;	/* ca sa il scot din container pe alt layer, sa nu imi deplaseze continutul cand devine vizibil*/
+	width:100%;
+}
+nav{
+    font-size: 13px;
+    font-family: Verdana;
+    height:var(--inaltime-menu);
+    width:100%;
+    top:0;
+    padding:0;
+    background: var(--dark-blue);
+    z-index:10;
+    position: sticky;
+}
+nav ul.menu>li{
+    float:left;
+    width:110px;
+	position:relative;/* pentru ca submenul pozitionat relativ sa aiba ca referinta parintele li*/
+}
+
+nav ul, nav li{
+    padding:0;
+    margin:0;
+}
+nav ul.menu li{
+    text-align:center;
+    list-style-type: none;
+    background: var(--dark-blue);
+    cursor:pointer;
+}
+nav ul.menu li a, nav ul.menu li div{
+    text-decoration: none;
+    color: white;
+    display: block;
+    font-weight: 900;
+    height:var(--inaltime-menu);
+    line-height:var(--inaltime-menu);
+}
+#main_page{
+    display: inline;
+}
+/*deschidere submenu*/
+nav ul.menu>li:hover>ul{
+	display:block;
+    animation: aparitie_meniu;
+    animation-duration: 0.75s;
+    text-transform: capitalize;
+    font-size: 12.5px;
+}
+
+#hamburger{
+    display: none;
+    height: var(--inaltime-menu);
+}
+#ch-menu{
+    display: none ;
+}
+#hamburger img{
+    height:100%;
+    width:auto;
+  }
+ul.menu>li > a::before, ul.menu>li > div::before{
+    content: " ";
+    height: 0.25rem;
+    width: 100%;
+    border: 1px solid transparent;
+    background-color: white;
+    position:absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    background-image: linear-gradient(to top, var(--light-beige), var(--dark-beige), var(--light-beige));
+    transition: all 0.5s linear;
+}
+
+ul.menu>li:hover>a::before{
+    top: 2.6rem;
+    opacity: 1;
+}
+
+ul.menu>li:hover>div::before{
+    top: 2.6rem;
+    opacity: 1;
+}
+
+ul.submenu>li>a:hover{
+    background-color: var(--baby-blue);
+    transition:all 0.6s linear;
+}
+
+
+@keyframes aparitie_meniu{
+    0%{
+        transform: scale(0, 0);
+    }
+    100%{
+        transform: scale(1, 1);
+    }
+}

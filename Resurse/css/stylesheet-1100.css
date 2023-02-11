@@ -1,0 +1,51 @@
+html{
+    font-size:14px;
+}
+
+h1{
+    text-align: center;
+}
+
+body{
+    --body-padding:1.5rem;
+    margin:0;
+}
+
+#grid-pagina{
+    display:grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-template-areas: 
+        "gr-1 gr-1"
+        "gr-8 gr-8"
+        "gr-3 gr-4" 
+        "gr-2 gr-2"
+        "gr-5 gr-6"
+        "gr-7 gr-7"; 
+    padding:4%;
+    grid-gap:2rem;
+}
+
+iframe{
+    width: 420px;
+    height: 232px;
+}
+.iframescreen{
+    width: 420px;
+}
+.iframecolumn a{
+    font-weight: bold;
+}
+.photos_oat{
+    display: flex;
+}
+.oat{
+    flex: 33,33%;
+    padding: 5px;
+    text-align: center;
+    font-size: 17px;
+}
+#galerie_statica{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    text-align: center;
+}

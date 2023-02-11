@@ -1,0 +1,23 @@
+html{
+    --dark-blue: #70909e;
+    --light-blue:#e8f8ff;
+    --baby-blue:#bedceb;
+    --dark-beige:#9e8260;
+    --light-beige: #ebd7be;
+}
+
+::cue{
+    background: linear-gradient(to right, var(--dark-blue), var(--dark-beige));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  @media screen and (max-width:1000px){
+    ::cue{
+    font-size: 0.8rem;
+    }
+
+  }

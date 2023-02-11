@@ -1,0 +1,9 @@
+@use 'sass:list';
+@use 'sass:math';
+
+@use '../resurse/scss/galerie_animata_frag' with (
+  $transformare_i: polygon(0% 0%, 50% 0%, 50% 100%, 0% 100%, 0% 0%, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 50% 0%),
+  $transformare_f: polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%, 0% 0%, 0% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 0%),
+  $setare-server: <%- locals.culoare %>,
+  $nrimag: <%- locals.nrimagini %>
+);
